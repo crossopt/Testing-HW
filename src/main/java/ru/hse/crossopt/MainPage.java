@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class MainPage {
     private WebDriver driver;
@@ -17,6 +18,8 @@ public class MainPage {
     }
 
     public IssueListPage clickIssues() {
+        var wait = new WebDriverWait(driver, 6);
+        wait.until(driver -> listButton.isDisplayed());
         listButton.click();
         return new IssueListPage(driver);
     }

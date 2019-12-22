@@ -31,14 +31,8 @@ class NewIssuePageTest {
         driver = new ChromeDriver();
         driver.get("localhost:8080");
 
-        try {
-            var mainPage = new LoginPage(driver).login("root", "root");
-            Thread.sleep(1000);
-            listPage = mainPage.clickIssues();
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        var mainPage = new LoginPage(driver).login("root", "root");
+        listPage = mainPage.clickIssues();
     }
 
     @AfterEach
@@ -46,19 +40,15 @@ class NewIssuePageTest {
         driver.quit();
     }
 
-    void testCreateCorrect(String summary, String description) throws InterruptedException {
+    void testCreateCorrect(String summary, String description) {
         var newIssuePage = listPage.clickNewIssue();
-        Thread.sleep(1000);
         assertDoesNotThrow(() -> newIssuePage.newIssue(summary, description));
-        Thread.sleep(1000);
         assertTrue(newIssuePage.successMatches("was reported"));
     }
 
-    void testCreateError(String summary, String description) throws InterruptedException {
+    void testCreateError(String summary, String description) {
         var newIssuePage = listPage.clickNewIssue();
-        Thread.sleep(1000);
         assertDoesNotThrow(() -> newIssuePage.newIssue(summary, description));
-        Thread.sleep(1000);
         assertTrue(newIssuePage.errorMatches("Summary is required"));
     }
 
@@ -71,32 +61,32 @@ class NewIssuePageTest {
     }
 
     @Test
-    void testCreateSimpleIssue() throws InterruptedException {
+    void testCreateSimpleIssue() {
         testCreateCorrect("Summary", "Description");
     }
 
     @Test
-    void testCreateEmptyIssue() throws InterruptedException {
+    void testCreateEmptyIssue() {
         testCreateError("", "");
     }
 
     @Test
-    void testCreateEmptySummaryIssue() throws InterruptedException {
+    void testCreateEmptySummaryIssue() {
         testCreateError("", "Description");
     }
 
     @Test
-    void testCreateEmptyDescriptionIssue() throws InterruptedException {
+    void testCreateEmptyDescriptionIssue() {
         testCreateCorrect("Summary", "");
     }
 
     @Test
-    void testCreateBlankSpacesSummaryAndDescriptionIssue() throws InterruptedException {
+    void testCreateBlankSpacesSummaryAndDescriptionIssue() {
         testCreateCorrect("                  ", "                           ");
     }
 
     @Test
-    void testCreateSeveralIssues() throws InterruptedException {
+    void testCreateSeveralIssues() {
         testCreateCorrect("Summary 1", "Description 1");
         testCreateCorrect("Summary 2", "Description 2");
         testCreateCorrect("Summary 2", "Description 2");
@@ -105,36 +95,36 @@ class NewIssuePageTest {
     }
 
     @Test
-    void testCreateLongDescriptionIssue() throws InterruptedException {
+    void testCreateLongDescriptionIssue() {
         var summary = generateString(1000);
-        var description = generateString(10000);
+        var description = generateString(2000);
         testCreateCorrect(summary, description);
     }
 
     @Test
-    void testCreateLongSummaryIssue() throws InterruptedException {
+    void testCreateLongSummaryIssue() {
         var summary = generateString(1000);
         var description = generateString(100);
         testCreateCorrect(summary, description);
     }
 
     @Test
-    void testCreateSpecialSymbolSummaryIssue() throws InterruptedException {
+    void testCreateSpecialSymbolSummaryIssue() {
         testCreateCorrect("!@^(!)@*$^)@^!B)efoasb", "Something broke down.");
     }
 
     @Test
-    void testCreateSpecialSymbolDescriptionIssue() throws InterruptedException {
+    void testCreateSpecialSymbolDescriptionIssue() {
         testCreateCorrect("Short summary", "Курица \u3527");
     }
 
     @Test
-    void testCreateMultilineSummaryIssue() throws InterruptedException {
+    void testCreateMultilineSummaryIssue() {
         testCreateCorrect("Summary.\nSome summary details.", "A description");
     }
 
     @Test
-    void testCreateMultilineDescriptionIssue() throws InterruptedException {
+    void testCreateMultilineDescriptionIssue() {
         testCreateCorrect("Summary", "Description.\nSome elaboration on the description.\n\nUseless comment.");
     }
 }

@@ -31,26 +31,23 @@ class LoginPageTest {
     }
 
     @Test
-    void testCorrectLogin() throws InterruptedException {
+    void testCorrectLogin() {
         var loginPage = new LoginPage(driver);
         var mainPage = loginPage.login("root", "root");
-        Thread.sleep(1000);
         assertDoesNotThrow(mainPage::clickIssues);
     }
 
     @Test
-    void testWrongPasswordLogin() throws InterruptedException {
+    void testWrongPasswordLogin() {
         var loginPage = new LoginPage(driver);
         var mainPage = loginPage.login("root", "not-root");
-        Thread.sleep(1000);
         assertThrows(Exception.class, mainPage::clickIssues);
     }
 
     @Test
-    void testInvalidUserLogin() throws InterruptedException {
+    void testInvalidUserLogin() {
         var loginPage = new LoginPage(driver);
         var mainPage = loginPage.login("not-a-user", "root");
-        Thread.sleep(1000);
         assertThrows(Exception.class, mainPage::clickIssues);
     }
 }
