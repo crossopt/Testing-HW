@@ -44,12 +44,15 @@ class NewIssuePageTest {
         var newIssuePage = listPage.clickNewIssue();
         assertDoesNotThrow(() -> newIssuePage.newIssue(summary, description));
         assertTrue(newIssuePage.successMatches("was reported"));
+        var expectedDescription = description.equals("") ? "No description" : description;
+        assertTrue(listPage.checkLastIssue(summary, expectedDescription));
     }
 
     void testCreateError(String summary, String description) {
         var newIssuePage = listPage.clickNewIssue();
         assertDoesNotThrow(() -> newIssuePage.newIssue(summary, description));
         assertTrue(newIssuePage.errorMatches("Summary is required"));
+        assertDoesNotThrow(newIssuePage::clickIssues);
     }
 
     String generateString(int length) {
@@ -58,6 +61,11 @@ class NewIssuePageTest {
             string[i] = (char)('a' + random.nextInt(26));
         }
         return new String(string);
+    }
+
+    @Test
+    void testCreateEmptyDescriptionIssue() {
+        testCreateCorrect("Summary", "");
     }
 
     @Test
@@ -72,26 +80,23 @@ class NewIssuePageTest {
 
     @Test
     void testCreateEmptySummaryIssue() {
-        testCreateError("", "Description");
-    }
-
-    @Test
-    void testCreateEmptyDescriptionIssue() {
+        testCreateError("", "No description");
         testCreateCorrect("Summary", "");
     }
 
     @Test
-    void testCreateBlankSpacesSummaryAndDescriptionIssue() {
-        testCreateCorrect("                  ", "                           ");
+    void testCreateIssueWithEmptyDescriptionText() {
+        testCreateCorrect("This description is the one that shows up for an empty description field.", "No description");
     }
 
     @Test
-    void testCreateSeveralIssues() {
-        testCreateCorrect("Summary 1", "Description 1");
-        testCreateCorrect("Summary 2", "Description 2");
-        testCreateCorrect("Summary 2", "Description 2");
-        testCreateCorrect("Summary", "Another Description");
-        testCreateError("", "Description");
+    void testCreateEndSpacesInDescriptionIssue() {
+        testCreateCorrect("Summary", "A Description       ");
+    }
+
+    @Test
+    void testCreateLeadingSpacesInDescriptionIssue() {
+        testCreateCorrect("Summary", "    A Description");
     }
 
     @Test
@@ -116,11 +121,6 @@ class NewIssuePageTest {
     @Test
     void testCreateSpecialSymbolDescriptionIssue() {
         testCreateCorrect("Short summary", "Курица \u3527");
-    }
-
-    @Test
-    void testCreateMultilineSummaryIssue() {
-        testCreateCorrect("Summary.\nSome summary details.", "A description");
     }
 
     @Test

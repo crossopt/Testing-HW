@@ -24,6 +24,9 @@ public class NewIssuePage {
     @FindBy(className = "message")
     private WebElement successPopup;
 
+    @FindBy(xpath = "/html/body/div[1]/div[1]/div/a[2]/span")
+    private WebElement listButton;
+
     public NewIssuePage(WebDriver driver) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
@@ -47,5 +50,11 @@ public class NewIssuePage {
         var wait = new WebDriverWait(driver, 5);
         wait.until(driver -> errorPopup.isDisplayed());
         return errorPopup.isDisplayed() && errorPopup.getText().contains(errorMessage);
+    }
+
+    public void clickIssues() {
+        var wait = new WebDriverWait(driver, 6);
+        wait.until(driver -> listButton.isDisplayed());
+        listButton.click();
     }
 }
